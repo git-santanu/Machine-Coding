@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 
 const FileManager = ({ data }) => {
   const [expandIds, setExpandIds] = useState(new Set());
@@ -6,7 +6,6 @@ const FileManager = ({ data }) => {
   const handleExpand = (eachItemId) => {
     setExpandIds((prev) => {
       const newSet = new Set(prev);
-      console.log('newSet', newSet);
       if (newSet.has(eachItemId)) {
         newSet.delete(eachItemId);
       } else {
@@ -24,7 +23,9 @@ const FileManager = ({ data }) => {
           return (
             <div key={item.id}>
               {item?.children && (
-                <span style={{ margin: '5px', cursor: 'pointer' }} onClick={() => handleExpand(item.id)}>{isExpanded ? 'v' : '>'}</span>)
+                <span style={{ margin: '5px', cursor: 'pointer' }} onClick={() => handleExpand(item.id)}>
+                  {isExpanded ? '▼' : '▶'}
+                  </span>)
               } {item.name}
               {isExpanded && item?.children && item.children.map((child) => (
                 <div key={child.id} style={{ marginLeft: '20px' }}>
