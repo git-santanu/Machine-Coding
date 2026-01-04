@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import '../App.css';
 const PER_PAGE_ITEMS = 10;
 
 const Pagination = () => {
+  const [isHover, setIsHover] = useState({});
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
   const startIndex = (currentPage - 1) * PER_PAGE_ITEMS;
   const endIndex = startIndex + PER_PAGE_ITEMS;
-  console.log(startIndex, endIndex);
   const totalPages = Math.ceil(items.length / PER_PAGE_ITEMS);
+
   const fetchItems = async () => {
     try {
       const data = await fetch('https://dummyjson.com/products?limit=100');
@@ -23,6 +25,14 @@ const Pagination = () => {
     fetchItems();
   }, []);
 
+  const handleHoverEnter = useCallback((id) => {
+    setIsHover(prev => ({...prev, [id]: true}));
+  }, [isHover]);
+
+  const handleHoverLeave = useCallback((id) => {
+    setIsHover(prev => ({...prev, [id]: false}));
+  }, [isHover]);
+
   return (
     <>
       <div className='container'>
@@ -30,7 +40,13 @@ const Pagination = () => {
           items.slice(startIndex, endIndex).map(item =>
             <div key={item.id} className='prduct_details'>
               <img src={item.thumbnail} alt={item.title} width="100" />
-               {item.id} - {item.title}
+              <div
+                onMouseEnter={() => handleHoverEnter(item.id)}
+                onMouseLeave={() => handleHoverLeave(item.id)}
+              >
+                {item.title}
+              </div>
+              {isHover[item.id] && <div className='product_description'>{item.description}</div>}
             </div>
           )
           : <p>loading...</p>
@@ -43,9 +59,9 @@ const Pagination = () => {
             <button key={index} className='page_button' style={{
               backgroundColor: index === currentPage - 1 ? '#007bff' : '',
             }}
-            onClick={()=> {
-              setCurrentPage(index + 1)
-            }}
+              onClick={() => {
+                setCurrentPage(index + 1)
+              }}
             >
               {index + 1}
             </button>

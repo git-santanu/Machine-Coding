@@ -26,3 +26,17 @@
     border-radius: 5px;
     cursor: pointer;
 }
+.product_description {
+    background-color: #131313;
+    color: white;
+    width: auto;
+    height: 80px;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+
+}
