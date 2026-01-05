@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import '../App.css';
+import ProductItem from './ProductItem';
 const PER_PAGE_ITEMS = 10;
 
 const Pagination = () => {
-  const [isHover, setIsHover] = useState({});
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -11,7 +11,7 @@ const Pagination = () => {
   const endIndex = startIndex + PER_PAGE_ITEMS;
   const totalPages = Math.ceil(items.length / PER_PAGE_ITEMS);
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       const data = await fetch('https://dummyjson.com/products?limit=100');
       const json = await data.json();
@@ -19,39 +19,23 @@ const Pagination = () => {
     } catch (error) {
       console.error('Error fetching items:', error);
     }
-  };
-  console.log(items);
+  }, [setItems]);
+
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [fetchItems]);
 
-  const handleHoverEnter = useCallback((id) => {
-    setIsHover(prev => ({...prev, [id]: true}));
-  }, [isHover]);
-
-  const handleHoverLeave = useCallback((id) => {
-    setIsHover(prev => ({...prev, [id]: false}));
-  }, [isHover]);
+  console.log('items', items);
 
   return (
     <>
       <div className='container'>
         {items.length > 0 ?
           items.slice(startIndex, endIndex).map(item =>
-            <div key={item.id} className='prduct_details'>
-              <img src={item.thumbnail} alt={item.title} width="100" />
-              <div
-                onMouseEnter={() => handleHoverEnter(item.id)}
-                onMouseLeave={() => handleHoverLeave(item.id)}
-              >
-                {item.title}
-              </div>
-              {isHover[item.id] && <div className='product_description'>{item.description}</div>}
-            </div>
+              <ProductItem key={item.id} item={item} />
           )
           : <p>loading...</p>
         }
-
       </div>
       <div className='pagination_container'>
         {
